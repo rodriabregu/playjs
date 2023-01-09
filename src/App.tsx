@@ -3,56 +3,89 @@ import Editor from '@monaco-editor/react';
 
 function App() {
   const [code, setCode] = useState('');
-  const resultDiv = document.getElementById('result');
+  const [lines, setLines] = useState(0);
 
-  globalThis.open = 'Desactivated for security reasons'
-  globalThis.print = 'Desactivated for security reasons'
-  globalThis.alert = 'Desactivated for security reasons'
-  globalThis.prompt = 'Desactivated for security reasons'
-  globalThis.confirm = 'Desactivated for security reasons'
+  globalThis.open = 'Desactivated for security reasons';
+  globalThis.print = 'Desactivated for security reasons';
+  globalThis.alert = 'Desactivated for security reasons';
+  globalThis.prompt = 'Desactivated for security reasons';
+  globalThis.confirm = 'Desactivated for security reasons';
 
-  // function evaluarCodigo(codigo, elemento) {
-  //   let output = document.querySelector(elemento);
-
-  //   output.innerHTML = '';
-  //   try {
-  //     let funcion = function() {
-  //       return eval(codigo);
-  //     };
-
-  //     let contexto = {};
-  //     output.innerHTML += funcion.apply(contexto) + "<br>";
-  //   } catch (error) {
-  //     output.innerHTML += error + "<br>";
-  //   }
-  // }
+  globalThis.console.log = function (...e) {
+    return parseResultHTML(...e);
+  };
 
   addEventListener('keyup', () => {
-    window.eval(code);
-    if (resultDiv) resultDiv.innerHTML = '';
-
-    const lines = code.split('\n');
-
-    for (const line of lines) {
-      let result;
-      try {
-        result = eval(line)
-      } catch (error) {
-        result = error;
-      }
-
-      if (result === undefined) result = '';
-      if (resultDiv) resultDiv.innerHTML += `${result}<br>`;
-    }
+    let result = '';
+    setLines(code.split(/\r?\n|\r|\n/g).length);
+    code
+      .trimEnd()
+      .split(/\r?\n|\r|\n/g)
+      .reduce((acc, line) => {
+        if (line.trim() === '')
+          return (
+            (result += `
+`),
+            acc +
+              `
+`
+          );
+        const htmlPart = acc + line;
+        if (
+          line ||
+          line === '' ||
+          !line.startsWith(/\/\//) ||
+          !line.startsWith(/\/*/)
+        )
+          try {
+            const html = eval(htmlPart);
+            result +=
+              parseResultHTML(html) +
+              `
+` +
+              `<br/>`;
+          } catch (e) {
+            e.toString().match(/ReferenceError/gi) && (result += e),
+              (result += `
+`);
+          }
+        return (
+          htmlPart +
+          `
+`
+        );
+      }, '');
+    document.querySelector('#result').innerHTML = result;
   });
+
+  function parseResultHTML(e) {
+    return typeof e == 'object'
+      ? JSON.stringify(e)
+      : typeof e == 'string'
+      ? e.match(/^['"].*['"]$/)
+        ? e
+        : `'${e}'`
+      : typeof e == 'function'
+      ? e()
+      : typeof e == 'symbol'
+      ? e.toString()
+      : typeof e > 'u'
+      ? ''
+      : e;
+  }
 
   const config = {
     minimap: {
       enabled: false,
     },
-    lineNumbers: 'off',
     fontSize: 16,
-  }
+    lineDecorationsWidth: 0,
+    padding: 0,
+    scrollbar: {
+      vertical: 'hidden',
+      horizontal: 'hidden',
+    },
+  };
 
   return (
     <div
@@ -60,21 +93,44 @@ function App() {
         backgroundColor: '#282c34',
         color: 'white',
         display: 'flex',
-        flexDirection: 'row',
         width: '100vw',
         height: '100vh',
       }}
     >
       <Editor
         width={'50vw'}
-        value={'"example code"'}
-        defaultLanguage='javascript'
-        // onChange={(e) => setCode(e?.replace('const', 'var') ?? '')}
+        language='javascript'
         onChange={(e) => setCode(e ?? '')}
         theme={'vs-dark'}
         options={config}
+        loading={''}
       />
-      <code style={{ marginLeft: '1rem', fontSize: 18 }} id='result' />
+      <div>
+        {Array.from(Array(lines).keys()).map((e) => (
+          <span
+            style={{
+              display: 'block',
+              width: '28px',
+              color: '#858585',
+              fontSize: '16px',
+              lineHeight: '24px',
+              textAlign: 'center',
+            }}
+            key={e}
+          >
+            {e + 1}
+          </span>
+        ))}
+      </div>
+      <div
+        id='result'
+        style={{
+          width: '100%',
+          height: '100%',
+          fontSize: '17px',
+          lineHeight: '24px',
+        }}
+      />
     </div>
   );
 }
