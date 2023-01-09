@@ -9,8 +9,8 @@ function App() {
   const [lines, setLines] = useState(0);
   const resultDiv = document.querySelector('#result') as HTMLElement;
 
-  addEventListener('keyup', () => {
-    let result = '';
+const codePlay = () => {
+  let result = '';
     setLines(code.split(/\r?\n|\r|\n/g).length);
     code
       .trimEnd()
@@ -24,7 +24,7 @@ function App() {
               `
 `
           );
-        const htmlPart = acc + line;
+        const htmlPart: any = acc + line;
         if (
           line ||
           line === '' ||
@@ -49,8 +49,16 @@ function App() {
 `
         );
       }, '');
-      resultDiv.innerHTML = result;
-  });
+      if(resultDiv) resultDiv.innerHTML = result;
+}
+
+React.useEffect(() => {
+  const timeout = setTimeout(() => {
+    codePlay();
+  }, 500);
+
+  return () => clearTimeout(timeout);
+}, [code]);
 
   return (
     <main className='container'>
