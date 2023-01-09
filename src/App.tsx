@@ -31,8 +31,6 @@ function App() {
           !line.startsWith(/\/*/)
         )
           try {
-            console.log('line', line);
-
             const html = eval(htmlPart);
             result +=
               parseResultHTML(html) +
