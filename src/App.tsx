@@ -5,6 +5,12 @@ function App() {
   const [code, setCode] = useState('');
   const resultDiv = document.getElementById('result');
 
+  globalThis.open = 'Desactivated for security reasons'
+  globalThis.print = 'Desactivated for security reasons'
+  globalThis.alert = 'Desactivated for security reasons'
+  globalThis.prompt = 'Desactivated for security reasons'
+  globalThis.confirm = 'Desactivated for security reasons'
+
   // function evaluarCodigo(codigo, elemento) {
   //   let output = document.querySelector(elemento);
 
@@ -40,6 +46,14 @@ function App() {
     }
   });
 
+  const config = {
+    minimap: {
+      enabled: false,
+    },
+    lineNumbers: 'off',
+    fontSize: 16,
+  }
+
   return (
     <div
       style={{
@@ -53,12 +67,14 @@ function App() {
     >
       <Editor
         width={'50vw'}
+        value={'"example code"'}
         defaultLanguage='javascript'
         // onChange={(e) => setCode(e?.replace('const', 'var') ?? '')}
         onChange={(e) => setCode(e ?? '')}
         theme={'vs-dark'}
+        options={config}
       />
-      <div style={{ marginLeft: '1rem' }} id='result' />
+      <code style={{ marginLeft: '1rem', fontSize: 18 }} id='result' />
     </div>
   );
 }
