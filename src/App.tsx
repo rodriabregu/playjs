@@ -7,6 +7,7 @@ import './globalRules.ts';
 function App() {
   const [code, setCode] = useState('');
   const [lines, setLines] = useState(0);
+  const resultDiv = document.querySelector('#result') as HTMLElement;
 
   addEventListener('keyup', () => {
     let result = '';
@@ -27,8 +28,8 @@ function App() {
         if (
           line ||
           line === '' ||
-          !line.startsWith(/\/\//) ||
-          !line.startsWith(/\/*/)
+          !line.startsWith((/\/\//) as any) ||
+          !line.startsWith((/\/*/) as any)
         )
           try {
             const html = eval(htmlPart);
@@ -38,9 +39,9 @@ function App() {
 ` +
               `<br/>`;
           } catch (e) {
-            e.toString().match(/ReferenceError/gi) && (result += e),
+            (e as any).toString().match(/ReferenceError/gi) && (result += e),
               (result += `
-`);
+` + `<br/>`);
           }
         return (
           htmlPart +
@@ -48,7 +49,7 @@ function App() {
 `
         );
       }, '');
-    document.querySelector('#result').innerHTML = result;
+      resultDiv.innerHTML = result;
   });
 
   return (

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { parseResultHTML } from './utils';
 
 globalThis.open = 'Desactivated for security reasons' as any;
