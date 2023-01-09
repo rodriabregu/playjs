@@ -1,19 +1,12 @@
 import { useState } from 'react';
 import Editor from '@monaco-editor/react';
 
+import { monacoOptions, parseResultHTML } from './utils';
+import './globalRules.ts';
+
 function App() {
   const [code, setCode] = useState('');
   const [lines, setLines] = useState(0);
-
-  globalThis.open = 'Desactivated for security reasons';
-  globalThis.print = 'Desactivated for security reasons';
-  globalThis.alert = 'Desactivated for security reasons';
-  globalThis.prompt = 'Desactivated for security reasons';
-  globalThis.confirm = 'Desactivated for security reasons';
-
-  globalThis.console.log = function (...e) {
-    return parseResultHTML(...e);
-  };
 
   addEventListener('keyup', () => {
     let result = '';
@@ -38,6 +31,8 @@ function App() {
           !line.startsWith(/\/*/)
         )
           try {
+            console.log('line', line);
+
             const html = eval(htmlPart);
             result +=
               parseResultHTML(html) +
@@ -58,80 +53,26 @@ function App() {
     document.querySelector('#result').innerHTML = result;
   });
 
-  function parseResultHTML(e) {
-    return typeof e == 'object'
-      ? JSON.stringify(e)
-      : typeof e == 'string'
-      ? e.match(/^['"].*['"]$/)
-        ? e
-        : `'${e}'`
-      : typeof e == 'function'
-      ? e()
-      : typeof e == 'symbol'
-      ? e.toString()
-      : typeof e > 'u'
-      ? ''
-      : e;
-  }
-
-  const config = {
-    minimap: {
-      enabled: false,
-    },
-    fontSize: 16,
-    lineDecorationsWidth: 0,
-    padding: 0,
-    scrollbar: {
-      vertical: 'hidden',
-      horizontal: 'hidden',
-    },
-  };
-
   return (
-    <div
-      style={{
-        backgroundColor: '#282c34',
-        color: 'white',
-        display: 'flex',
-        width: '100vw',
-        height: '100vh',
-      }}
-    >
+    <main className='container'>
       <Editor
-        width={'50vw'}
-        language='javascript'
-        onChange={(e) => setCode(e ?? '')}
-        theme={'vs-dark'}
-        options={config}
         loading={''}
+        theme={'vs-dark'}
+        language='javascript'
+        options={monacoOptions}
+        onChange={(e) => setCode(e ?? '')}
       />
-      <div>
-        {Array.from(Array(lines).keys()).map((e) => (
-          <span
-            style={{
-              display: 'block',
-              width: '28px',
-              color: '#858585',
-              fontSize: '16px',
-              lineHeight: '24px',
-              textAlign: 'center',
-            }}
-            key={e}
-          >
-            {e + 1}
-          </span>
-        ))}
-      </div>
-      <div
-        id='result'
-        style={{
-          width: '100%',
-          height: '100%',
-          fontSize: '17px',
-          lineHeight: '24px',
-        }}
-      />
-    </div>
+      <section className='divider'>
+        <div>
+          {Array.from(Array(lines).keys()).map((e) => (
+            <span className='numberColumns' key={e}>
+              {e + 1}
+            </span>
+          ))}
+        </div>
+        <div className='result' id='result' />
+      </section>
+    </main>
   );
 }
 
