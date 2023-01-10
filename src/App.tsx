@@ -19,7 +19,7 @@ const codePlay = () => {
         if (line.trim() === '')
           return (
             (result += `
-`),
+` + `<br/>`),
             acc +
               `
 `
