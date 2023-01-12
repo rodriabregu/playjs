@@ -7,7 +7,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "PlayJs",
+    "productName": "PlayJS",
     "version": "0.1.0"
   },
   "tauri": {
@@ -58,7 +58,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "PlayJs (v.0.1.0-alpha)",
+        "title": "PlayJS (v.0.1.0-alpha)",
         "width": 800
       }
     ]
