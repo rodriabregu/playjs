@@ -1,8 +1,8 @@
 // @ts-nocheck
-import { parseResultHTML } from './utils';
+import { parseResultOutput } from './utils';
 
 globalThis.console.log = function (...e) {
-  return parseResultHTML(...e);
+  return parseResultOutput(...e);
 };
 
 globalThis.open = () => 'Desactivated for security reasons';
