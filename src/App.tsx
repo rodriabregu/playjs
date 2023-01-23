@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
 
-import { monacoOptions, parseResultHTML } from './utils';
 import './globalRules.ts';
+import { monacoOptions, parseResultOutput, validateRegexError } from './utils';
+import { NumberColumns } from './components/NumberColumns';
 
 function App() {
   const [code, setCode] = useState('');
@@ -34,12 +35,20 @@ const codePlay = () => {
           try {
             const html = eval(htmlPart);
             result +=
-              parseResultHTML(html) +
+              parseResultOutput(html) +
               `
 ` +
               `<br/>`;
+
+              if (result.includes('null')) {
+                  result = result.replaceAll('null', '<span style="color: #569cd6">null</span>');
+              }
+              if (result.includes('undefined')) {
+                  result = result.replaceAll('undefined', '<span style="color: #569cd6">undefined</span>');
+              }
           } catch (e) {
-            (e as any).toString().match(/ReferenceError/gi) && (result += e),
+            const error = (e as any).toString()
+            validateRegexError(error) && (result += e),
               (result += `
 ` + `<br/>`);
           }
@@ -52,31 +61,25 @@ const codePlay = () => {
       if(resultDiv) resultDiv.innerHTML = result;
 }
 
-React.useEffect(() => {
-  const timeout = setTimeout(() => {
-    codePlay();
-  }, 500);
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      codePlay();
+    }, 200);
 
-  return () => clearTimeout(timeout);
-}, [code]);
+    return () => clearTimeout(timeout);
+  }, [code]);
 
   return (
     <main className='container'>
       <Editor
         loading={''}
         theme={'vs-dark'}
-        language='javascript'
+        language={'javascript'}
         options={monacoOptions}
         onChange={(e) => setCode(e ?? '')}
       />
       <section className='divider'>
-        <div>
-          {Array.from(Array(lines).keys()).map((e) => (
-            <span className='numberColumns' key={e}>
-              {e + 1}
-            </span>
-          ))}
-        </div>
+        <NumberColumns lines={lines} />
         <div className='result' id='result' />
       </section>
     </main>
