@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "PlayJS",
-    "version": "0.1.1"
+    "version": "0.2.0"
   },
   "tauri": {
     "allowlist": {
@@ -58,8 +58,10 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "PlayJS (v.0.1.1-alpha)",
-        "width": 800
+        "title": "PlayJS (v.0.2.0-alpha)",
+        "width": 800,
+        "minWidth": 300,
+        "minHeight": 200
       }
     ]
   }
