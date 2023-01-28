@@ -16,11 +16,9 @@ export function useValidationCode() {
         .reduce((acc, line) => {
           if (line.trim() === '')
             return (
-              (result += `
-  ` + `<br/>`),
+              (result += `` + `<br/>`),
               acc +
-                `
-  `
+              ``
             );
           const htmlPart: any = acc + line;
           if (
@@ -32,11 +30,7 @@ export function useValidationCode() {
             try {
               const html = eval(htmlPart);
               result +=
-                parseResultOutput(html) +
-                `
-  ` +
-                `<br/>`;
-  
+                parseResultOutput(html) + `` + `<br/>`;
                 if (result.includes('null')) {
                     result = result.replaceAll('null', '<span style="color: #569cd6">null</span>');
                 }
@@ -46,13 +40,12 @@ export function useValidationCode() {
             } catch (e) {
               const error = (e as any).toString()
               validateRegexError(error) && (result += e),
-                (result += `
-  ` + `<br/>`);
+                (result += `` + `<br/>`);
             }
           return (
             htmlPart +
             `
-  `
+`
           );
         }, '');
 
