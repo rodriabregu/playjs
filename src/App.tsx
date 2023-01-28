@@ -2,9 +2,9 @@ import React from 'react';
 import Editor from '@monaco-editor/react';
 
 import './globalRules.ts';
-import { monacoOptions } from './utils';
-import { NumberColumns } from './components/NumberColumns';
-import { useValidationCode } from './hooks/useValidationCode';
+import { monacoOptions } from 'utils/index';
+import { NumberColumns } from 'components/NumberColumns';
+import { useValidationCode } from 'hooks/useValidationCode';
 
 function App() {
   const { setCode, lines } = useValidationCode();
