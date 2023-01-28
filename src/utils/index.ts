@@ -46,12 +46,7 @@ export const monacoOptions = {
   overviewRulerBorder: false,
 };
 
-export const validateRegexError = (error: string) =>
-  error.matchAll(
-    /ReferenceError/gi ||
-      /SyntaxError/gi ||
-      /TypeError/gi ||
-      /RangeError/gi ||
-      /EvalError/gi ||
-      /URIError/gi
-  );
+export const validateRegexError = (error: string) => {
+  const regex = /ReferenceError|TypeError|RangeError|EvalError|URIError/gi;
+  return regex.test(error);
+};
